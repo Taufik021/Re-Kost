@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-Kost - Pasar Anak Kos</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ===================== SPLASH ===================== -->
+    <div id="splash-screen">
+        <div class="logo-container">
+            <img src="Logo.png" alt="Logo Re-Kost" class="logo-icon">
+            <div class="logo-text-main">RE-KOST</div>
+            <div class="logo-tagline">PASAR ANAK KOS</div>
+        </div>
+        <p class="splash-desc">Temukan perlengkapan kos bekas berkualitas di sekitar kampusmu.</p>
+        <button class="btn btn-primary" onclick="showPage('auth-page')">Masuk</button>
+    </div>
+
+    <!-- ===================== AUTH ===================== -->
+    <div id="auth-page" class="auth-container hidden">
+        <div class="auth-header">
+            <h2>Daftar Akun</h2>
+            <p>Lengkapi data untuk mulai bertransaksi</p>
+        </div>
+        <input id="name" type="text" placeholder="Nama Lengkap">
+        <input id="phone" type="number" placeholder="Nomor WhatsApp aktif">
+        <input id="campus" type="text" placeholder="Nama Kampus ">
+        <input id="location" type="text" placeholder="Alamat Kos / Area">
+        <input id="password" type="password" placeholder="Buat Password Keamanan">
+        <button class="btn btn-primary mt-25" onclick="registerUser()">Buat Akun Re-Kost</button>
+        <div class="social-divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">atau daftar dengan</span>
+            <div class="divider-line"></div>
+        </div>
+        <button class="btn btn-google">
+            <svg width="18" height="18" viewBox="0 0 18 18">
+                <path d="M17.64 8.29c.13.47.16.97.16 1.46 0 2.2-.6 4.17-1.76 5.88-.13.2-.28.4-.43.58h-3.32c.5-.47.9-.97 1.2-1.57.57-.96.88-2.03.88-3.23 0-1.87-.73-3.47-2.07-4.66.12-.32.27-.64.44-.94l2.9-1.5c.67 1.05 1 2.3 1 3.98z" fill="#167EE6"/>
+                <path d="M8.7 17.64c-1.7 0-3.3-.4-4.73-1.16-.2-.1-.4-.2-.58-.33V12.8c.4.3.83.56 1.3.73 1.03.4 2.13.6 3.28.6 1.7 0 3.2-.5 4.54-1.46h3.32c-.83 1.23-1.8 2.2-3.1 2.92-1.15.63-2.6 1.05-4.03 1.05z" fill="#12A45C"/>
+                <path d="M.36 9.71c-.13-.47-.16-.97-.16-1.46 0-2.2.6-4.17 1.76-5.88.13-.2.28-.4.43-.58h3.32c-.5.47-.9.97-1.2 1.57-.57.96-.88 2.03-.88 3.23 0 1.87.73 3.47 2.07 4.66-.12.32-.27.64-.44.94L.36 13.69c-.67-1.05-1-2.3-1-3.98z" fill="#FFC722"/>
+                <path d="M9.3 0c1.7 0 3.3.4 4.73 1.16.2.1.4.2.58.33v3.38c-.4-.3-.83-.56-1.3-.73-1.03-.4-2.13-.6-3.28-.6-1.7 0-3.2.5-4.54 1.46H1.17C2 1.77 2.97.8 4.27.08 5.42-.55 6.87-.97 8.3-.97z" fill="#EB4132"/>
+            </svg>
+            Google Account
+        </button>
+        <p class="login-prompt">Sudah punya akun? <span class="login-link">Login</span></p>
+    </div>
+
+
+
+    <!-- ===================== HOME ===================== -->
+    <div id="home-page" class="hidden">
+        <div class="nav-bar">
+            <div class="nav-header">
+                <div class="nav-greeting" id="greeting"></div>
+                <div class="nav-icon" id="notif-button" style="cursor:pointer;position:relative;" onclick="toggleNotifPanel()">
+                    🔔
+                    <span id="notif-badge" class="notif-badge hidden"></span>
+                </div>
+            </div>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Cari peralatan yang kamu mau" onkeyup="searchProducts(this.value)">
+            </div>
+        </div>
+
+        <!-- Notification popup gantung (outside nav-bar) -->
+        <div id="notif-popup" class="hidden notif-popup">
+            <strong id="notif-popup-title">Info:</strong> <span id="notif-popup-text">Ada pesanan!</span>
+        </div>
+
+        <!-- Notification Panel / Dropdown (Baru) -->
+        <div id="notif-panel" class="notif-panel hidden">
+            <div class="notif-panel-header">Daftar Notifikasi</div>
+            <div id="notif-list-container">
+                <p style="text-align:center; padding:15px; color:#999;font-size:13px;">Belum ada notifikasi pesanan.</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <div class="section-title">Kategori Utama</div>
+            <div class="see-all" onclick="showPage('all-page')">Lihat Semua</div>
+        </div>
+        <div class="categories">
+            <div class="category-item" onclick="showCategory('Elektronik')"><span class="cat-icon">🔌</span>Elektronik</div>
+            <div class="category-item" onclick="showCategory('Masak')"><span class="cat-icon">🍳</span>Masak</div>
+            <div class="category-item" onclick="showCategory('Kursi')"><span class="cat-icon">🪑</span>Kursi</div>
+            <div class="category-item" onclick="showCategory('Buku')"><span class="cat-icon">📚</span>Buku</div>
+            <div class="category-item" onclick="showCategory('Lainnya')"><span class="cat-icon">📦</span>Lainnya</div>
+        </div>
+
+        <div class="section-header">
+            <div class="section-title">Barang Terbaru Sekitar Kamu</div>
+        </div>
+        <div class="product-grid" id="home-grid">
+            <div class="product-card static-card" data-cat="Masak">
+                <img src="Toples.jpg" alt="Toples tempat simpan kue/jajan" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Toples tempat simpan kue/jajan</p>
+                    <p class="price">Rp 120.000</p>
+                    <p class="location">📍 300m - Jatimulyo</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Kursi">
+                <img src="meja lipat.jpg" alt="Meja Belajar Lipat" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Meja Belajar Lipat </p>
+                    <p class="price">Rp 55.000</p>
+                    <p class="location">📍 1.1km - Sumbersari</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Elektronik">
+                <img src="kipas angin.jpg" alt="Kipas Angin Berdiri" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Kipas Angin Berdiri</p>
+                    <p class="price">Rp 180.000</p>
+                    <p class="location">📍 800m - Dinoyo</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Kursi">
+                <img src="Gantung baju.jpg" alt="Gantung baju" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Gantung baju</p>
+                    <p class="price">Rp 90.000</p>
+                    <p class="location">📍 1.5km - Landungsari</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- akhir home-page -->
+
+    <!-- ===================== CATEGORY ===================== -->
+    <div id="category-page" class="hidden">
+        <div class="nav-bar">
+            <div class="nav-header">
+                <div class="nav-back" onclick="showPage('home-page')"> < Kembali</div>
+                <div class="nav-title" id="category-title">Kategori</div>
+                <div class="nav-placeholder"></div>
+            </div>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Cari..." onkeyup="searchProducts(this.value)">            </div>
+        </div>
+        <div class="product-grid" id="category-grid"></div>
+    </div>
+
+    <!-- ===================== ALL ITEMS ===================== -->
+    <div id="all-page" class="hidden">
+        <div class="nav-bar">
+            <div class="nav-header">
+                <div class="nav-back" onclick="showPage('home-page')"> < Kembali</div>
+                <div class="nav-title">Semua Barang</div>
+                <div class="nav-placeholder"></div>
+            </div>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Cari..." onkeyup="searchProducts(this.value)">            </div>
+        </div>
+        <div class="product-grid" id="all-grid">
+            <div class="product-card static-card" data-cat="Masak">
+                <img src="Toples.jpg" alt="Toples tempat simpan kue/jajan" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Toples tempat simpan kue/jajan</p>
+                    <p class="price">Rp 120.000</p>
+                    <p class="location">📍 300m - Jatimulyo</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Kursi">
+                <img src="meja lipat.jpg" alt="Meja Belajar Lipat" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Meja Belajar Lipat </p>
+                    <p class="price">Rp 55.000</p>
+                    <p class="location">📍 1.1km - Sumbersari</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Elektronik">
+                <img src="kipas angin.jpg" alt="Kipas Angin Berdiri" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Kipas Angin Berdiri Sekai</p>
+                    <p class="price">Rp 180.000</p>
+                    <p class="location">📍 800m - Dinoyo</p>
+                </div>
+            </div>
+            <div class="product-card static-card" data-cat="Kursi">
+                <img src="Gantung baju.jpg" alt="Gantung baju" class="product-img">
+                <div class="product-info">
+                    <p class="product-name">Gantung baju</p>
+                    <p class="price">Rp 90.000</p>
+                    <p class="location">📍 1.5km - Landungsari</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SELL ===================== -->
+    <div id="sell-page" class="hidden">
+        <div class="sell-container">
+            <h2>Upload / Jual Barang</h2>
+            <p class="sell-subtitle">Digunakan untuk menjual barang.</p>
+            <form id="sell-form">
+   <!-- ✅ FIXED PHOTO UPLOAD -->
+<div class="photo-box" id="photo-box">
+    <div class="photo-placeholder">
+        📷<br><span class="photo-text">+ Klik untuk tambah foto</span>
+    </div>
+</div>
+<input type="file" accept="image/*" id="item-photo" style="display:none;">
+
+    <div class="field-group">
+        <input type="text" id="item-name" placeholder="Nama barang" required>
+    </div>
+
+    <div class="field-group">
+        <select id="item-category" required>
+            <option value="">Kategori</option>
+            <option>Elektronik</option>
+            <option>Masak</option>
+            <option>Kursi</option>
+            <option>Buku</option>
+            <option>Lainnya</option>
+        </select>
+    </div>
+
+    <div class="field-group">
+        <input type="number" id="item-price" placeholder="Harga" required>
+    </div>
+
+    <div class="field-group">
+        <textarea id="item-desc" placeholder="Deskripsi" rows="3"></textarea>
+    </div>
+
+    <div class="field-group">
+        <input type="text" id="item-location" placeholder="Lokasi kos" required>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Upload / Posting Barang</button>
+</form>
+        </div>
+    </div>
+
+    <!-- ===================== PROFILE ===================== -->
+    <div id="profile-page" class="hidden">
+
+        <!-- Top bar -->
+        <div class="pf-topbar">
+            <div class="pf-back" onclick="showPage('home-page')"> < Kembali</div>
+        </div>
+
+        <div class="pf-scroll">
+
+            <!-- Avatar + Name -->
+            <div class="pf-hero">
+                <div class="pf-avatar-wrap" onclick="document.getElementById('profile-photo-input').click()">
+                    <img src="https://via.placeholder.com/100/2D9CDB/ffffff?text=👤" alt="Foto" id="profile-image">
+                </div>
+                <input type="file" accept="image/*" id="profile-photo-input" class="hidden">
+                <div class="pf-name" id="profile-name-display">Budi</div>
+                <div class="pf-sub" id="profile-campus-display">UNIBRAW</div>
+                <div class="pf-sub" id="profile-location-display">Sigura-gura</div>
+            </div>
+
+            <!-- ACCOUNT -->
+            <div class="pf-group-label">Account</div>
+            <div class="pf-group">
+
+                <div class="pf-row" onclick="toggleEditForm()">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">👤</span>
+                        <span class="pf-row-text">Edit Profile</span>
+                    </div>
+                    <span class="pf-chevron">›</span>
+                </div>
+
+                <!-- Inline edit form -->
+                <div id="profile-inline-form" class="pf-inline-form hidden">
+                    <div class="pf-field">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="profile-name" value="Budi">
+                    </div>
+                    <div class="pf-field">
+                        <label>Nama Kampus</label>
+                        <input type="text" id="profile-campus" value="UNIBRAW">
+                    </div>
+                    <div class="pf-field">
+                        <label>Kos / Lokasi</label>
+                        <input type="text" id="profile-location" value="Sigura-gura">
+                    </div>
+                    <button type="button" class="pf-save-btn" id="save-profile-btn">Simpan</button>
+                </div>
+
+                <div class="pf-divider"></div>
+
+                <div class="pf-row" onclick="toggleItemPanel('selling')">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">🛍️</span>
+                        <span class="pf-row-text">Barang yang dijual</span>
+                    </div>
+                    <span class="pf-chevron">›</span>
+                </div>
+                <div id="selling-list" class="pf-item-panel hidden" style="padding: 15px 15px 25px 15px;">
+                    <div class="product-grid" id="selling-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0;"></div>
+                </div>
+
+                <div class="pf-divider"></div>
+
+                <div class="pf-row" onclick="toggleItemPanel('favorite')">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">🤍</span>
+                        <span class="pf-row-text">Barang favorit</span>
+                    </div>
+                    <span class="pf-chevron">›</span>
+                </div>
+                    <div id="favorite-list" class="pf-item-panel hidden" style="padding: 10px;">
+                    <!-- List favorit akan muncul di sini -->
+                </div>
+            </div>
+
+            <!-- DISPLAY -->
+            <div class="pf-group-label">Display</div>
+            <div class="pf-group">
+
+                <label class="pf-row" for="theme-light">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">🌙</span>
+                        <span class="pf-row-text">Light</span>
+                    </div>
+                    <div class="pf-radio-wrap">
+                        <input type="radio" name="theme" id="theme-light" value="light">
+                        <span class="pf-radio-dot"></span>
+                    </div>
+                </label>
+
+                <div class="pf-divider"></div>
+
+                <label class="pf-row" for="theme-dark">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">🌑</span>
+                        <span class="pf-row-text">Dark</span>
+                    </div>
+                    <div class="pf-radio-wrap">
+                        <input type="radio" name="theme" id="theme-dark" value="dark">
+                        <span class="pf-radio-dot"></span>
+                    </div>
+                </label>
+
+            </div>
+
+            <!-- OTHER -->
+            <div class="pf-group-label">Other</div>
+            <div class="pf-group pf-group-last">
+                <div class="pf-row" onclick="logout()">
+                    <div class="pf-row-left">
+                        <span class="pf-row-icon">🔴</span>
+                        <span class="pf-row-text pf-text-logout">Logout</span>
+                    </div>
+                    <span class="pf-chevron">›</span>
+                </div>
+            </div>
+
+        </div><!-- end pf-scroll -->
+    </div>
+    <!-- akhir profile-page -->
+
+    <!-- ===================== CHAT PAGE ===================== -->
+
+<!-- ===================== CHAT DETAIL ===================== -->
+<div id="chat-detail-page" class="hidden">
+    <!-- HEADER ATAS -->
+    <div class="nav-bar">
+        <div class="nav-header">
+            <div class="nav-back" onclick="showPage('chat-page')"> < Kembali</div>
+            <div class="nav-title" id="chat-detail-title">Budi</div>
+            <div class="nav-placeholder"></div>
+        </div>
+    </div>
+    
+    <!-- MESSAGES -->
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages"></div>
+        
+        <!-- INPUT DI DALAM - BAWAH -->
+        <div class="chat-input-box">
+            <div class="input-wrapper">
+                <span>📎</span>
+                <input type="text" id="message-input" placeholder="Ketik pesan..." onkeypress="handleKeypress(event)">                <button onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- ===================== CHAT PAGE ===================== -->
+<div id="chat-page" class="hidden">
+    <div class="nav-bar">
+        <div class="nav-header">
+            <div class="nav-back" onclick="showPage('home-page')"> < Kembali</div>
+            <div class="nav-title">Chat</div>
+            <div class="nav-placeholder"></div>
+        </div>
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" placeholder="Cari chat..." onkeyup="searchChats(this.value)">
+        </div>
+    </div>
+    
+    <div class="chat-list" id="chat-list-container">
+        <!-- Daftar obrolan aktif (Firebase) akan muncul di sini -->
+        <p style="text-align:center; padding: 20px; color:#999;">Memuat ruang obrolan...</p>
+    </div>
+</div>
+
+    <!-- ===================== BOTTOM NAV ===================== -->
+    <div class="bottom-nav" style="display: none;">
+    <div class="nav-item" data-page="home-page" onclick="showPage('home-page')">
+        🏠<br>
+    </div>
+    <div class="nav-item" data-page="chat-page" onclick="showPage('chat-page')">
+        💬<br>
+    </div>
+    <div class="nav-item" data-page="sell-page" onclick="showPage('sell-page')">
+        ➕<br>
+    </div>
+    <div class="nav-item" data-page="profile-page" onclick="showPage('profile-page')">
+        👤<br>
+    </div>
+</div>
+
+    <!-- ===================== SELLER PUBLIC PROFILE PAGE ===================== -->
+    <div id="seller-page" class="hidden">
+        <!-- Header/Nav -->
+        <div class="nav-bar">
+            <div class="nav-header">
+                <div class="nav-back" onclick="closeSellerProfile()"> < Kembali</div>
+                <div class="nav-title">Lapak Penjual</div>
+                <div class="nav-placeholder"></div>
+            </div>
+        </div>
+        
+        <div style="padding: 20px; padding-bottom:100px;">
+            <!-- Seller Info Box -->
+            <div style="background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
+                <div id="seller-page-avatar" style="font-size:40px; background:#e0f2fe; width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; overflow:hidden; margin: 0 auto 10px auto;">👤</div>
+                <h3 id="seller-page-name" style="margin: 0; font-size: 20px; color: var(--text-color);">Memuat...</h3>
+                <p style="color: #7f8c8d; font-size: 13px; margin: 5px 0 15px 0;">Terverifikasi</p>
+                <button class="btn btn-primary" onclick="chatFromSellerPage()" style="width: 100%; border-radius: 8px; font-weight: bold; background: #2D9CDB; border: none;">💬 Chat Penjual Ini</button>
+            </div>
+
+            <div class="section-header">
+                <h3 class="section-title">Barang yang Dijual</h3>
+            </div>
+            
+            <!-- Grid Items -->
+            <div class="product-grid" id="seller-product-grid">
+                <!-- Items injected by JS -->
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- akhir app-container -->
+
+<!-- ===================== DETAIL MODAL ===================== -->
+<div id="detail-modal-backdrop" class="modal-backdrop hidden" onclick="closeDetail()"></div>
+<div id="detail-page" class="detail-modal hidden">
+    <div class="detail-modal-content">
+        <div class="detail-modal-header">
+            <span class="detail-close" onclick="closeDetail()">✕</span>
+            <div class="detail-modal-title"></div>
+            <div class="detail-menu-wrapper">
+                <button class="detail-menu-btn" onclick="toggleDetailMenu()">⋮</button>
+                <div id="detail-menu" class="detail-menu hidden">
+                    <button onclick="deleteProduct()" class="detail-menu-item">🗑️ Hapus Barang</button>
+                    <button onclick="shareProduct()" class="detail-menu-item">📤 Share</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-container">
+            <img id="detail-image" style="width:100%;height:250px;object-fit:cover;border-radius:8px;margin-bottom:20px;">
+
+            <h2 id="detail-name"></h2>
+            <p id="detail-price" style="font-size:20px;font-weight:bold;color:#00A651;"></p>
+            <p id="detail-location" style="color:#666;"></p>
+            <div id="detail-seller-box" style="display:flex; align-items:center; background:#f4f6f8; padding:12px 15px; border-radius:12px; margin-top:20px; border: 1px solid #e1e8ed; cursor:pointer;">
+                <div id="detail-seller-avatar" style="font-size:24px; background:#e0f2fe; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:15px; overflow:hidden;">👤</div>
+                <div style="flex:1;">
+                    <p style="font-size:11px; color:#7f8c8d; margin:0; text-transform:uppercase; letter-spacing:1px; margin-bottom: 2px;">Lapak Penjual</p>
+                    <p id="detail-seller-name" style="font-size:15px; font-weight:700; color:#2c3e50; margin:0;">Memuat...</p>
+                </div>
+            </div>
+
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-top:15px;">
+                <p style="font-weight:600;margin-bottom:10px;">Deskripsi:</p>
+                <p id="detail-description" style="color:#555;line-height:1.6;"></p>
+            </div>
+
+            <div class="button-group" style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="addToFavorite()" style="flex:1;min-width:100px;">❤️ Favorit</button>
+                <button class="btn btn-secondary" onclick="chatSeller()" style="flex:1;min-width:100px;">💬 Chat</button>
+                <button class="btn btn-primary" onclick="buyProduct()" style="flex:1;min-width:100px;">🛒 Beli</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== CONFIRM BUY MODAL ===================== -->
+<div id="buy-modal-backdrop" class="modal-backdrop hidden" onclick="closeBuyModal()"></div>
+<div id="buy-modal" class="detail-modal hidden">
+    <div class="detail-modal-content" style="padding: 20px; text-align: center; max-height: auto;">
+        <h3 style="margin-bottom: 10px; color: var(--text-color);">Konfirmasi Pesanan</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.5;" id="buy-msg-text">
+            Sistem akan mengirimkan permintaan pesanan ke penjual secara langsung. Lanjutkan?
+        </p>
+        <div class="button-group" style="display:flex;gap:10px;">
+            <button class="btn btn-secondary" onclick="closeBuyModal()" style="flex:1;">Batal</button>
+            <button class="btn btn-primary" onclick="confirmBuy()" id="confirm-buy-btn" style="flex:1;">Kirim Pesanan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPae4LAMUuZStLyWmKAB_EjMey2WHTFUA",
+  authDomain: "tugas-re-kost.firebaseapp.com",
+  projectId: "tugas-re-kost",
+  storageBucket: "tugas-re-kost.firebasestorage.app",
+  messagingSenderId: "102649650901",
+  appId: "1:102649650901:web:e71cf36a5ccf6189bd4c5c"
+};
+
+// INIT FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
